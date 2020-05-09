@@ -99,5 +99,5 @@ theme: landscape
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: git@git.com:Crisscrisis/Crisscrisis.github.io.git
-  branch:master
+  repo: git@github.com:Crisscrisis/Crisscrisis.github.io.git
+  branch: master
