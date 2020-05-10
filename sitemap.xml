@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://crisscrisis.github.io/2020/05/09/hello-world/</loc>
+    
+    <lastmod>2020-05-10T10:13:34.857Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://crisscrisis.github.io/friends/index.html</loc>
     
     <lastmod>2020-05-10T09:55:02.056Z</lastmod>
@@ -12,13 +19,6 @@
     <loc>https://crisscrisis.github.io/categories/index.html</loc>
     
     <lastmod>2020-05-10T09:53:18.740Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://crisscrisis.github.io/2020/05/09/hello-world/</loc>
-    
-    <lastmod>2020-05-09T16:29:45.364Z</lastmod>
     
   </url>
   
