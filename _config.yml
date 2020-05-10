@@ -101,3 +101,9 @@ deploy:
   type: git
   repo: git@github.com:Crisscrisis/Crisscrisis.github.io.git
   branch: master
+
+# sitemap
+sitemap:
+  path: sitemap.xml
+baidusitemap:
+  path: baidusitemap.xml
