@@ -340,6 +340,238 @@ string addBinary(string a, string b) {
 ### leetcode28 实现strStr()
 
 ```
+思路：遍历被匹配的string haystack，如果第一个字符相等，则遍历下一个，如果遍历完之后，发现正好到达needle的末尾，则说明匹配上，则退出。需要考虑多种边界条件以及多种特殊情况：
+1.haystack和needle长度为1
+2.haystack长度小于needle
+3.haystack或needle为空
+```
+
+```c++
+int strStr(string haystack, string needle) {
+        if (needle.empty()) {
+            return 0;
+        }
+        if (haystack.empty() || (haystack.size() < needle.size())) {
+            return -1;
+        }
+        for (int i = 0; i <= (haystack.size() - needle.size()); i++) {
+            int k = i;
+            int j = 0;
+            while ( k < haystack.size() && j < needle.size() && (haystack.at(k) == needle.at(j)) ) {
+                k++;
+                j++;
+            }
+            if (j == needle.size()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+```
+
+### leetcode14 最长公共前缀
+
+```
+思路：先将字符串数组数组用sort排序，排好序之后，该字符串数组变为字典序，则要找最长公共前缀，只需要找字典序的数组中的第一个字符串和最后一个字符串的公共前缀，即为最长公共前缀
+```
+
+```c++
+string longestCommonPrefix(vector<string>& strs) {
+        string ans;
+        if (strs.empty()) {
+            return ans;
+        }
+        sort(strs.begin(),strs.end());
+        if (strs.at(0).empty()) {
+            return ans;
+        }
+        int n = strs.size();
+        int i = 0;
+        for (i = 0; i < strs.at(0).size(); i++) {
+            if (strs.at(0).at(i) != strs.at(n-1).at(i)) {
+                return strs.at(0).substr(0,i);
+            }
+        }
+        if (i == strs.at(0).size()) {
+            return strs.at(0);
+        }
+        return ans;
+    }
+```
+
+### leetcode344 反转字符串
+
+```
+思路：使用双指针，分别从前后朝中间方向走，每次交换两个指针所指的空间内容，停止条件：left>=right
+```
+
+```c++
+void reverseString(vector<char>& s) {
+        int begin, end;
+        if (s.empty()) {
+            return;
+        }
+        begin = 0;
+        end = s.size() - 1;
+        while(begin < end) {
+            swap(s.at(begin++), s.at(end--));
+        }
+    }
+```
+
+### leetcode561 数组拆分
+
+```
+思路：使用数学思想，先将该数组sort变为从小到大排列的数组，然后可以发现，要实现最大的总和，取的必然是第1,3,5,7...奇数个数，分别跟第2,4,6,8...偶数个数作为组合。
+证明：对于一个升序数组[n1,n2,...n2m-1,n2m],选第一对min(x,y)时，必然会“牺牲掉”n2m，也就是说n2m必然是作为min(x,y)中较大的那个，那么此时最佳策略就是拿出其余数组中最大的和其搭配，也就是选择n2m-1，那这一对min(x,y)留下的最大值就是n2m-1。剩下的数组，按照相同的方法，以此类推，则最终选出的就是升序数组的奇数个元素
+```
+
+```c++
+int arrayPairSum(vector<int>& nums) {
+        if (nums.empty()) {
+            return 0;
+        }
+        sort(nums.begin(), nums.end());
+        int ans = 0;
+        for (int i = 0; 2 * i < nums.size(); i++) {
+            ans += nums.at(2 * i);
+        }
+        return ans;
+    }
+```
+
+### leetcode167 两数之和2-输入有序数组
+
+```
+思路：前后双指针分别指向头和尾，计算其指向的两个元素之和，如果等于target，则直接输出；如果小于target，则需要更大一点，头指针向后移动一位；如果大于target，则需要更小一点，尾指针向前移动一位
+```
+
+```c++
+vector<int> twoSum(vector<int>& numbers, int target) {
+        vector<int> ans;
+        if (numbers.empty() || numbers.size() == 0) {
+            return ans;
+        }
+        int begin = 0;
+        int end = numbers.size() - 1;
+        int sum = numbers.at(begin) + numbers.at(end);
+        while( sum != target && begin < end) {
+            if (sum < target) {
+                begin++;
+                sum = numbers.at(begin) + numbers.at(end);
+            } else {
+                end--;
+                sum = numbers.at(begin) + numbers.at(end);
+            }
+        }
+        if (sum == target) {
+            ans.push_back(++begin);
+            ans.push_back(++end);
+            return ans;
+        } else {
+            return ans;
+        }
+    }
+```
+
+### leetcode27 移除元素
+
+```
+思路：用了两个指针，一个指针j用于遍历原始数组，另一个指针i用于遍历“待存入”的位置，两个指针均从0向后移动，只有当j指向的元素不等于target时，才将其存入i指向的“待存入”位置，否则，j指向下一个，i不动，这样j就比i快或至少和气相等，最终遍历完整个数组，将后面多余的数组删掉。
+```
+
+```c++
+int removeElement(vector<int>& nums, int val) {
+        if (nums.empty()) {
+            return 0;
+        }
+        int ans = nums.size();
+        int i = 0;
+        for (int j = 0; j < nums.size(); j++) {
+            if (nums[j] != val) {
+                nums[i] = nums[j];
+                i++;
+            }
+            else {
+                ans--;
+            }
+        }
+        while (nums.size() != ans) {
+            nums.pop_back();
+        }
+        return ans;
+    }
+```
+
+### leetcode485 最大连续1的个数
+
+```
+思路：需要一个当前连续1的计数sum，和最大计数maxSum，直接遍历，遇到1则计数值增加1，遇到0，则比较sum和maxSum，将更大的那一个存给maxSum，并且sum清零。
+```
+
+```c++
+int findMaxConsecutiveOnes(vector<int>& nums) {
+        if (nums.empty()) {
+            return 0;
+        }
+        int sum = 0;
+        int maxSum = sum;
+        for (int i = 0; i < nums.size(); i++) {
+            if (nums.at(i) == 1) {
+                sum++;
+            } else {
+                if (maxSum < sum) {
+                    maxSum = sum;
+                }
+                sum = 0;
+            }
+        }
+        if (maxSum < sum) {
+            maxSum = sum;
+        }
+        return maxSum;
+    }
+```
+
+### leetcode209 长度最小的子数组
+
+```
+思路：考虑使用一个滑窗。遍历当前的数组，存储下从该滑窗内包含的数组的和，滑窗的起始位置arrayStart为0，终止位置为当前遍历的位置。如果当前滑窗的和sum大于等于s，且当前滑窗的和sum减去滑窗最左侧的元素的值之后，仍然大于等于s，则滑窗向右移动一格，且更新sum和arrayStart，并且比较minLen和tmpLen，取更小的那个赋值给minLen。照此规律遍历一遍，即可得到结果。
+```
+
+```c++
+int minSubArrayLen(int s, vector<int>& nums) {
+        if (nums.empty()) {
+            return 0;
+        }
+        int tmpLen = 0;
+        int minLen = 0;
+        int sum = 0;
+        int arrayStart = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            sum += nums.at(i);
+            tmpLen++;
+            if (sum >= s && minLen == 0) {
+                minLen = tmpLen;
+            }
+            while ((sum - nums.at(arrayStart)) >= s) {
+                sum = sum - nums.at(arrayStart);
+                arrayStart++;
+                tmpLen--;
+                if (minLen > tmpLen || minLen == 0) {
+                    minLen = tmpLen;
+                }
+            }
+        }
+        return minLen;
+    }
+```
+
+## 数组综合
+
+### leetcode189 旋转数组
+
+```
 思路：
 ```
 
