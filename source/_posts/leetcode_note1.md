@@ -1,6 +1,6 @@
 # leetcode 刷题之路（数组和字符串专题）
 
-## 数组篇（leetcode724,747,66）
+## 数组篇
 
 ### leetcode724 寻找数组中心索引
 
@@ -572,6 +572,196 @@ int minSubArrayLen(int s, vector<int>& nums) {
 ### leetcode189 旋转数组
 
 ```
-思路：
+思路：循环替换，从第一个idx开始，他要到达的下一个位置是(idx+k)%len，则在下一个位置上的元素被挤出来，那个元素再找他的下一个位置...以此类推，直到挪动的次数等于len结束。需要注意特殊情况：如果挪动是在部分几个元素中循环进行，则需要退出，给起始位置加一，进行下一次循环
+```
+
+```c++
+void rotate(vector<int>& nums, int k) {
+        if (nums.empty() || k <= 0) {
+            return;
+        }
+        int len = nums.size();
+        k = k % len;
+        int start = 0;
+        int tmp = 0;
+        for (int cnt = 0; cnt < len; start++) {
+            int current = start;
+            int pre = nums.at(current);
+            do {
+                int next = (current + k) % len;
+                int tmp = nums.at(next);
+                nums.at(next) = pre;
+                current = next;
+                pre = tmp;
+                cnt++;
+            } while (current != start);
+        }
+    }
+```
+
+### leetcode119 杨辉三角2
+
+```
+思路：输入的rowIdex为i，则实际取得的是杨辉三角的第i+1行(因为i是从0开始的)，且输出的数组长度也为i+1。则需要计算i+1次，每次只需要计算除去两头之外的值，每个值依赖的是上一行的两个值，即ans[j] = ans[j] + ans[j-1]，因为每次修改的值所依赖的是上一行中它本身位置和它本身位置之前的值，故需要后向前计算，否则会影响到下一个元素的计算。
+```
+
+```c++
+vector<int> getRow(int rowIndex) {
+        if (rowIndex < 0) {
+            vector<int> ans;
+            return ans;
+        }
+        vector<int> ans(rowIndex + 1);
+        if (rowIndex == 0) {
+            ans.at(0) = 1;
+            return ans;
+        }
+        if (rowIndex == 1) {
+            ans.at(0) = 1;
+            ans.at(1) = 1;
+            return ans;
+        }
+        for (int i = 0; i <= rowIndex; i++) {
+            ans[i] = 1;
+            for (int j = i; j > 1; j--) {
+                ans[j-1] = ans[j-2] + ans[j-1];
+            }
+        }
+        return ans;
+    }
+```
+
+### leetcode151 翻转字符串里的单词
+
+```
+思路：首先先将s中的单词一个一个解析出来，存入一个stack中，然后再逐个pop出stack，将其append到答案string中，需要考虑s为空，或空格的特殊情况
+```
+
+```c++
+string reverseWords(string s) {
+        if (s.empty()) {
+            string ans;
+            return ans;
+        }
+        stack<string> words;
+        string currWord;
+        for (int i = 0; i < s.size(); i++) {
+            if (s.at(i) == ' ') {
+                if (!currWord.empty()) {
+                    words.push(currWord);
+                    currWord = {};
+                }
+            } else {
+                currWord.push_back(s.at(i));
+            }
+        }
+        if (!currWord.empty()) {
+            words.push(currWord);
+        }
+        string ans;
+        if (words.empty()) {
+            return ans;
+        }
+        int wordsNum = words.size();
+        for (int i = 0; i < wordsNum - 1; i++) {
+            ans.append(words.top());
+            ans.append(" ");
+            words.pop();
+        }
+        ans.append(words.top());
+        return ans;
+    }
+```
+
+### leetcode557 反转字符串中的单词3
+
+```
+思路：逐个解析s，没遇到一个单词，则执行反转模块，需要begin，end来记录单词的首尾，需要考虑最后一个单词的特殊条件
+```
+
+```c++
+string reverseWords(string s) {
+        if (s.empty()) {
+            string ans;
+            return ans;
+        }
+        int begin = 0;
+        int end = 0;
+        for (int i = 0; i < s.size(); i++) {
+            if (s.at(i) == ' ') {
+                while (begin < end){
+                    char tmp = s.at(begin);
+                    s.at(begin) = s.at(end);
+                    s.at(end) = tmp;
+                    begin++;
+                    end--;
+                }
+                begin = i + 1;
+            } else {
+                end = i;
+            }
+        }
+        if (s.at(s.size() - 1) != ' '){
+            while (begin < end){
+                    char tmp = s.at(begin);
+                    s.at(begin) = s.at(end);
+                    s.at(end) = tmp;
+                    begin++;
+                    end--;
+                }
+        }
+        return s;
+    }
+```
+
+### leetcode26 删除排序数组中的重复项
+
+```
+思路：快慢指针，一个指针i用于遍历整个数组，另一个指针j用于指向待存入的位置，当i当前值的值和i-1不同时，则存入，i，j均+1，否则，i+1，j不变
+```
+
+```c++
+int removeDuplicates(vector<int>& nums) {
+        if (nums.empty()) {
+            return 0;
+        }
+        if (nums.size() == 1) {
+            return 1;
+        }
+        int ans = 1;
+        int j = 1;
+        for (int i = 1; i < nums.size(); i++) {
+            if (nums.at(i-1) != nums.at(i)) {
+                nums.at(j++) = nums.at(i);
+                ans++;
+            }
+        }
+        return ans;
+    }
+```
+
+### leetcode283 移动零
+
+```
+思路：快慢指针，指针j为慢指针，用于指向存储的非0元素的位置，快指针i用于遍历整个数组，如果当前i所指向的元素非0，则将其存入j指向的位置，并且记录下长度，根据记录的长度，将最后几位补为0
+```
+
+```c++
+void moveZeroes(vector<int>& nums) {
+        if (nums.empty()) {
+            return;
+        }
+        int j = 0;
+        int cnt = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            if(nums.at(i) != 0) {
+                nums.at(j++) = nums.at(i);
+                cnt++;
+            }
+        }
+        for (int i = cnt; i < nums.size(); i++) {
+            nums.at(i) = 0;
+        }
+    }
 ```
 
