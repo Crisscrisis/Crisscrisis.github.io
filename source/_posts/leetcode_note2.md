@@ -217,3 +217,56 @@ ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
     }
 ```
 
+### leetcode19 删除链表的倒数第N个节点
+
+```
+思路：首先遍历一遍，算出链表长度，然后算出删除倒数第N个节点，实际是要删的位置的前导位置个，然后进行删除操作
+```
+
+```c++
+ListNode* removeNthFromEnd(ListNode* head, int n) {
+        if (!head) {
+            return nullptr;
+        }
+        ListNode* tmp = head;
+        int cnt = 0;
+        while(tmp) {
+            cnt++;
+            tmp = tmp->next;
+        }
+        int move = cnt - n;
+        tmp = head;
+        if (move == 0) {
+            head = tmp->next;
+            delete tmp;
+            return head;
+        }
+        for (int i = 0; i < move - 1; i++) {
+            tmp = tmp->next;
+        }
+        tmp->next = tmp->next->next;
+        return head;
+    }
+```
+
+### leetcode206 反转链表
+
+```
+思路：设三个指针，pre，curr，nxt，进行遍历，每次遍历将其next重新赋值即可。
+```
+
+```c++
+ListNode* reverseList(ListNode* head) {
+        ListNode* pre = nullptr;
+        ListNode* curr = head;
+        ListNode* nxt = nullptr;
+        while (curr) {
+            nxt = curr->next;
+            curr->next = pre;
+            pre = curr;
+            curr = nxt;
+        }
+        return pre;
+    }
+```
+
